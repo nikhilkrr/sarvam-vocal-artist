@@ -6,9 +6,12 @@ import { useTTS } from "@/hooks/useTTS";
 import { Mic } from "lucide-react";
 
 const Index = () => {
-  const { generateAudio, isGenerating, audioUrl } = useTTS();
+  const { generateAudio, isGenerating, audioUrl, clearAudio } = useTTS();
   
   const handleSubmit = async (text: string, voiceId: string) => {
+    // Clear previous audio before generating new one
+    clearAudio();
+    // Generate new audio
     generateAudio({ text, voiceId });
   };
 

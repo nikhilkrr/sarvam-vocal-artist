@@ -11,7 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { VOICE_OPTIONS } from "@/lib/sarvam";
-import { Mic } from "lucide-react";
+import { Mic, Info } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface TextToSpeechFormProps {
   onSubmit: (text: string, voiceId: string) => void;
@@ -62,6 +63,15 @@ const TextToSpeechForm = ({ onSubmit, isLoading }: TextToSpeechFormProps) => {
               disabled={isLoading}
             />
           </div>
+          
+          {process.env.NODE_ENV === "development" && (
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                Running in development mode. Sample audio will be used.
+              </AlertDescription>
+            </Alert>
+          )}
           
           <Button 
             type="submit" 

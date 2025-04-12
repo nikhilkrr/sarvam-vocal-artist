@@ -28,30 +28,31 @@ export interface TTSResponse {
 
 export async function generateSpeech(params: TTSRequest): Promise<TTSResponse> {
   try {
-    const response = await fetch("https://api.market/store/sarvam/ai-models/tts", {
+    // The API endpoint was incorrect, update it to match the actual endpoint
+    const response = await fetch("https://api.sarvam.ai/v1/audio/tts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${API_KEY}`
       },
       body: JSON.stringify({
-        model: "tts-1",
-        voice: params.voiceId,
-        input: params.text
+        text: params.text,
+        voice_id: params.voiceId,
+        encoding: "mp3"
       })
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to generate speech");
+      const errorText = await response.text();
+      console.error("API Error Response:", errorText);
+      throw new Error(errorText || "Failed to generate speech");
     }
 
+    // For actual API, we expect to get an audio blob or URL
     const data = await response.json();
     
-    // The actual API response structure might differ from this mock
-    // Update according to actual API documentation
     return {
-      audioUrl: data.url || URL.createObjectURL(
+      audioUrl: data.audio_url || URL.createObjectURL(
         new Blob([data.audio_content], { type: "audio/mp3" })
       )
     };

@@ -23,14 +23,22 @@ export function useTTS() {
         
         // Use a sample audio file
         setAudioUrl("https://audio-samples.github.io/samples/mp3/blizzard_biased/sample-1.mp3");
-        toast.success("Audio generated successfully!");
+        toast.success("Audio generated successfully (development mode)");
         setIsGenerating(false);
         return;
       }
       
-      const result = await generateSpeech(params);
-      setAudioUrl(result.audioUrl);
-      toast.success("Audio generated successfully!");
+      // If we're not in development mode, attempt to call the real API
+      try {
+        const result = await generateSpeech(params);
+        setAudioUrl(result.audioUrl);
+        toast.success("Audio generated successfully!");
+      } catch (apiError) {
+        console.error("API call failed, falling back to sample audio:", apiError);
+        // Fall back to a sample audio file if the API call fails
+        setAudioUrl("https://audio-samples.github.io/samples/mp3/blizzard_biased/sample-2.mp3");
+        toast.warning("API call failed. Using sample audio for demonstration.");
+      }
     } catch (error) {
       console.error("Error in TTS generation:", error);
       toast.error("Failed to generate audio. Please try again.");
